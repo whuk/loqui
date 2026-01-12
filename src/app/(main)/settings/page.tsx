@@ -79,36 +79,6 @@ export default function SettingsPage() {
         </div>
       </section>
 
-      {/* Password change */}
-      <section className="mb-8">
-        <h2 className="text-lg font-medium mb-4">비밀번호 변경</h2>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">현재 비밀번호</label>
-            <input
-              type="password"
-              className="w-full px-4 py-2 border border-[var(--border)] rounded-lg bg-[var(--bg-primary)] focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">새 비밀번호</label>
-            <input
-              type="password"
-              className="w-full px-4 py-2 border border-[var(--border)] rounded-lg bg-[var(--bg-primary)] focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">비밀번호 확인</label>
-            <input
-              type="password"
-              className="w-full px-4 py-2 border border-[var(--border)] rounded-lg bg-[var(--bg-primary)] focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
-          <button className="px-4 py-2 bg-primary hover:bg-primary-hover text-white font-medium rounded-lg transition-colors">
-            저장
-          </button>
-        </div>
-      </section>
     </div>
   );
 }
