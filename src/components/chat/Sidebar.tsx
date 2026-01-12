@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -12,6 +13,11 @@ const dummyConversations = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  const handleLogoutClick = () => {
+    setShowLogoutConfirm(true);
+  };
 
   return (
     <aside className="w-64 h-full bg-sidebar-light dark:bg-sidebar-dark flex flex-col border-r border-[var(--border)]">
@@ -58,11 +64,36 @@ export function Sidebar() {
           <SettingsIcon />
           <span>설정</span>
         </Link>
-        <button className="flex items-center gap-2 w-full px-3 py-2 text-sm rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors text-left">
+        <button
+          onClick={handleLogoutClick}
+          className="flex items-center gap-2 w-full px-3 py-2 text-sm rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors text-left"
+        >
           <LogoutIcon />
           <span>로그아웃</span>
         </button>
       </div>
+
+      {/* Logout Confirmation Popup */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-[var(--bg-primary)] rounded-lg p-6 shadow-lg max-w-sm w-full mx-4">
+            <p className="text-center mb-4">로그아웃 하시겠습니까?</p>
+            <div className="flex gap-2 justify-center">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="px-4 py-2 rounded-lg bg-[var(--bg-tertiary)] hover:bg-[var(--bg-secondary)] transition-colors"
+              >
+                취소
+              </button>
+              <button
+                className="px-4 py-2 rounded-lg bg-accent hover:bg-accent-hover text-white transition-colors"
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }

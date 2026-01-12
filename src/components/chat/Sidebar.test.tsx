@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { Sidebar } from './Sidebar';
 
 // Mock next/navigation
@@ -57,5 +57,15 @@ describe('Sidebar', () => {
 
         const conv2Link = screen.getByRole('link', { name: /TypeScript 타입 질문/i });
         expect(conv2Link).toHaveAttribute('href', '/chat/2');
+    });
+
+    it('shows confirmation popup when logout button is clicked', () => {
+        render(<Sidebar />);
+
+        const logoutButton = screen.getByRole('button', { name: /로그아웃/i });
+        fireEvent.click(logoutButton);
+
+        // Confirmation popup should appear
+        expect(screen.getByText('로그아웃 하시겠습니까?')).toBeInTheDocument();
     });
 });
