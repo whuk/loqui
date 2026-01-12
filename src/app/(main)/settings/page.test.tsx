@@ -66,3 +66,12 @@ describe('SettingsPage - Theme Selection', () => {
         expect(darkRadio.checked).toBe(true);
     });
 });
+
+describe('SettingsPage - Layout', () => {
+    it('does not render password change section', () => {
+        render(<SettingsPage />);
+
+        expect(screen.queryByText('비밀번호 변경')).not.toBeInTheDocument();
+        expect(screen.queryByLabelText('현재 비밀번호')).not.toBeInTheDocument();
+    });
+});
