@@ -3,6 +3,14 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import SettingsPage from './page';
 import { useThemeStore } from '@/stores/themeStore';
 
+// Mock next/navigation
+const mockBack = vi.fn();
+vi.mock('next/navigation', () => ({
+    useRouter: () => ({
+        back: mockBack,
+    }),
+}));
+
 // Mock matchMedia for system theme detection
 const matchMediaMock = vi.fn((query: string) => ({
     matches: false,
@@ -73,5 +81,27 @@ describe('SettingsPage - Layout', () => {
 
         expect(screen.queryByText('비밀번호 변경')).not.toBeInTheDocument();
         expect(screen.queryByLabelText('현재 비밀번호')).not.toBeInTheDocument();
+    });
+});
+
+describe('SettingsPage - Navigation', () => {
+    beforeEach(() => {
+        mockBack.mockClear();
+    });
+
+    it('renders back button', () => {
+        render(<SettingsPage />);
+
+        const backButton = screen.getByRole('button', { name: '뒤로 가기' });
+        expect(backButton).toBeInTheDocument();
+    });
+
+    it('calls router.back when back button is clicked', () => {
+        render(<SettingsPage />);
+
+        const backButton = screen.getByRole('button', { name: '뒤로 가기' });
+        fireEvent.click(backButton);
+
+        expect(mockBack).toHaveBeenCalledTimes(1);
     });
 });
