@@ -50,6 +50,7 @@ export function ChatInput({ conversationId, onSend }: ChatInputProps) {
         <button
           type="submit"
           disabled={!message.trim()}
+          aria-label="Send message"
           className="p-2 m-2 rounded-lg bg-accent hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           <SendIcon />
