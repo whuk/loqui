@@ -11,10 +11,15 @@ export function SystemSettingsButton({ isAdmin: isAdminProp }: SystemSettingsBut
         return null;
     }
 
+    const handleClick = () => {
+        window.open('/admin/settings', '_blank');
+    };
+
     return (
         <button
             type="button"
             aria-label="시스템 설정"
+            onClick={handleClick}
         >
             시스템 설정
         </button>
