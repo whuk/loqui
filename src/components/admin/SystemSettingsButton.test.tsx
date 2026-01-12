@@ -1,10 +1,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { SystemSettingsButton } from './SystemSettingsButton';
+
+// Mock window.open
+const mockWindowOpen = vi.fn();
+Object.defineProperty(window, 'open', { value: mockWindowOpen, writable: true });
 
 describe('SystemSettingsButton', () => {
     afterEach(() => {
         vi.unstubAllEnvs();
+        mockWindowOpen.mockClear();
     });
 
     describe('visibility', () => {
@@ -46,6 +51,19 @@ describe('SystemSettingsButton', () => {
             render(<SystemSettingsButton />);
 
             expect(screen.queryByRole('button', { name: '시스템 설정' })).not.toBeInTheDocument();
+        });
+    });
+
+    describe('click behavior', () => {
+        it('opens /admin/settings in a new window when clicked', () => {
+            vi.stubEnv('NODE_ENV', 'development');
+
+            render(<SystemSettingsButton />);
+
+            const button = screen.getByRole('button', { name: '시스템 설정' });
+            fireEvent.click(button);
+
+            expect(mockWindowOpen).toHaveBeenCalledWith('/admin/settings', '_blank');
         });
     });
 });
