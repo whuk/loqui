@@ -1,8 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useThemeStore, Theme } from "@/stores/themeStore";
 
 export default function SettingsPage() {
+  const router = useRouter();
   const { theme, setTheme, applyTheme } = useThemeStore();
 
   const handleThemeChange = (newTheme: Theme) => {
@@ -11,9 +13,22 @@ export default function SettingsPage() {
     useThemeStore.getState().applyTheme();
   };
 
+  const handleBack = () => {
+    router.back();
+  };
+
   return (
-    <div className="max-w-2xl mx-auto py-8 px-4">
-      <h1 className="text-2xl font-semibold mb-8">설정</h1>
+    <div className="relative h-full">
+      <button
+        onClick={handleBack}
+        className="absolute top-4 left-4 flex items-center gap-2 px-3 py-2 text-sm rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors"
+        aria-label="뒤로 가기"
+      >
+        <BackIcon />
+        <span>뒤로</span>
+      </button>
+      <div className="max-w-2xl mx-auto py-8 px-4">
+        <h1 className="text-2xl font-semibold mb-8">설정</h1>
 
       {/* Theme settings */}
       <section className="mb-8">
@@ -78,7 +93,26 @@ export default function SettingsPage() {
           </div>
         </div>
       </section>
-
+      </div>
     </div>
+  );
+}
+
+function BackIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M19 12H5" />
+      <polyline points="12 19 5 12 12 5" />
+    </svg>
   );
 }
