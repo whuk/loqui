@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuthStore } from "@/stores/authStore";
 
 // 임시 더미 데이터
 const dummyConversations = [
@@ -13,10 +14,17 @@ const dummyConversations = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const logout = useAuthStore((state) => state.logout);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const handleLogoutClick = () => {
     setShowLogoutConfirm(true);
+  };
+
+  const handleLogoutConfirm = () => {
+    logout();
+    router.push("/login");
   };
 
   return (
@@ -86,6 +94,7 @@ export function Sidebar() {
                 취소
               </button>
               <button
+                onClick={handleLogoutConfirm}
                 className="px-4 py-2 rounded-lg bg-accent hover:bg-accent-hover text-white transition-colors"
               >
                 확인

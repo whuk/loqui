@@ -1,13 +1,33 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Sidebar } from './Sidebar';
 
 // Mock next/navigation
+const mockPush = vi.fn();
 vi.mock('next/navigation', () => ({
     usePathname: vi.fn(() => '/chat'),
+    useRouter: vi.fn(() => ({
+        push: mockPush,
+    })),
+}));
+
+// Mock authStore
+const mockLogout = vi.fn();
+vi.mock('@/stores/authStore', () => ({
+    useAuthStore: vi.fn((selector) => {
+        const state = { logout: mockLogout };
+        if (typeof selector === 'function') {
+            return selector(state);
+        }
+        return state;
+    }),
 }));
 
 describe('Sidebar', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
     it('renders new chat button', () => {
         render(<Sidebar />);
 
@@ -67,5 +87,21 @@ describe('Sidebar', () => {
 
         // Confirmation popup should appear
         expect(screen.getByText('로그아웃 하시겠습니까?')).toBeInTheDocument();
+    });
+
+    it('logs out and redirects to /login when confirm button is clicked', () => {
+        render(<Sidebar />);
+
+        // Click logout button to show popup
+        const logoutButton = screen.getByRole('button', { name: /로그아웃/i });
+        fireEvent.click(logoutButton);
+
+        // Click confirm button
+        const confirmButton = screen.getByRole('button', { name: /확인/i });
+        fireEvent.click(confirmButton);
+
+        // Verify logout was called and redirect happened
+        expect(mockLogout).toHaveBeenCalled();
+        expect(mockPush).toHaveBeenCalledWith('/login');
     });
 });

@@ -5,6 +5,20 @@ import { ResponsiveSidebar } from './ResponsiveSidebar';
 // Mock next/navigation
 vi.mock('next/navigation', () => ({
     usePathname: vi.fn(() => '/chat'),
+    useRouter: vi.fn(() => ({
+        push: vi.fn(),
+    })),
+}));
+
+// Mock authStore
+vi.mock('@/stores/authStore', () => ({
+    useAuthStore: vi.fn((selector) => {
+        const state = { logout: vi.fn() };
+        if (typeof selector === 'function') {
+            return selector(state);
+        }
+        return state;
+    }),
 }));
 
 describe('ResponsiveSidebar', () => {
