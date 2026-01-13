@@ -88,7 +88,7 @@
     - [x] **[TDD]** 설정 페이지 뒤로가기 버튼 테스트 및 구현.
     - [x] 뒤로가기 버튼 좌측 상단 배치.
 - [ ] **5.7 맞춤형 지침 (Custom Instructions)**
-    - [ ] **[TDD]** `customInstructionsStore.ts` 상태 관리 테스트 작성 및 구현.
+    - [x] **[TDD]** `customInstructionsStore.ts` 상태 관리 테스트 작성 및 구현.
         - 맞춤형 지침 저장/불러오기 로직.
         - localStorage 영속화.
     - [ ] **[TDD]** 맞춤형 지침 입력 폼 컴포넌트 테스트 작성 및 구현.
