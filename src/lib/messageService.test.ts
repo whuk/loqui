@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useChatStore } from '@/stores/chatStore';
+import { useCustomInstructionsStore } from '@/stores/customInstructionsStore';
 import { sendMessage } from './messageService';
 import { api } from './api';
 
@@ -17,6 +18,10 @@ describe('messageService', () => {
             currentConversationId: null,
             messages: {},
             isLoading: false,
+        });
+        useCustomInstructionsStore.setState({
+            aboutMe: '',
+            responseStyle: '',
         });
     });
 
@@ -119,6 +124,53 @@ describe('messageService', () => {
             const messages = useChatStore.getState().messages[conversationId];
             expect(messages).toEqual([]);
             expect(useChatStore.getState().isLoading).toBe(false);
+        });
+
+        it('includes custom instructions as system prompt when set', async () => {
+            const conversationId = 'conv-1';
+            const content = 'Hello';
+
+            useCustomInstructionsStore.setState({
+                aboutMe: 'I am a developer',
+                responseStyle: 'Be concise',
+            });
+
+            vi.mocked(api.post).mockResolvedValue({
+                data: { id: 'msg-1', role: 'user', content },
+            });
+
+            await sendMessage(conversationId, content);
+
+            expect(api.post).toHaveBeenCalledWith(
+                `/conversations/${conversationId}/messages`,
+                {
+                    content,
+                    systemPrompt: expect.stringContaining('I am a developer'),
+                }
+            );
+            expect(api.post).toHaveBeenCalledWith(
+                `/conversations/${conversationId}/messages`,
+                {
+                    content,
+                    systemPrompt: expect.stringContaining('Be concise'),
+                }
+            );
+        });
+
+        it('does not include system prompt when custom instructions are empty', async () => {
+            const conversationId = 'conv-1';
+            const content = 'Hello';
+
+            vi.mocked(api.post).mockResolvedValue({
+                data: { id: 'msg-1', role: 'user', content },
+            });
+
+            await sendMessage(conversationId, content);
+
+            expect(api.post).toHaveBeenCalledWith(
+                `/conversations/${conversationId}/messages`,
+                { content }
+            );
         });
     });
 });

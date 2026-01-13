@@ -1,5 +1,6 @@
 import { api } from './api';
 import { useChatStore, Message } from '@/stores/chatStore';
+import { useCustomInstructionsStore } from '@/stores/customInstructionsStore';
 
 interface SendMessageResponse {
     data: Message;
@@ -21,9 +22,18 @@ export async function sendMessage(conversationId: string, content: string): Prom
     setLoading(true);
 
     try {
+        // Get custom instructions system prompt
+        const systemPrompt = useCustomInstructionsStore.getState().getSystemPrompt();
+
+        // Build request payload
+        const payload: { content: string; systemPrompt?: string } = { content };
+        if (systemPrompt) {
+            payload.systemPrompt = systemPrompt;
+        }
+
         const response = await api.post<SendMessageResponse>(
             `/conversations/${conversationId}/messages`,
-            { content }
+            payload
         );
 
         // Replace temporary message with server response
