@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useThemeStore, Theme } from "@/stores/themeStore";
+import { CustomInstructionsForm } from "@/components/settings/CustomInstructionsForm";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -91,6 +92,20 @@ export default function SettingsPage() {
               disabled
             />
           </div>
+        </div>
+      </section>
+
+      {/* Custom Instructions */}
+      <section className="mb-8">
+        <h2 className="text-lg font-medium mb-4">맞춤형 지침</h2>
+        <CustomInstructionsForm />
+        <div className="mt-4">
+          <button
+            type="button"
+            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            저장
+          </button>
         </div>
       </section>
       </div>

@@ -1,7 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import SettingsPage from './page';
 import { useThemeStore } from '@/stores/themeStore';
+import { useCustomInstructionsStore } from '@/stores/customInstructionsStore';
 
 // Mock next/navigation
 const mockBack = vi.fn();
@@ -103,5 +105,52 @@ describe('SettingsPage - Navigation', () => {
         fireEvent.click(backButton);
 
         expect(mockBack).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe('SettingsPage - Custom Instructions', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+        useCustomInstructionsStore.setState({
+            aboutMe: '',
+            responseStyle: '',
+        });
+    });
+
+    it('renders custom instructions section', () => {
+        render(<SettingsPage />);
+
+        expect(screen.getByText('맞춤형 지침')).toBeInTheDocument();
+    });
+
+    it('renders custom instructions section after theme and profile', () => {
+        render(<SettingsPage />);
+
+        const sections = screen.getAllByRole('heading', { level: 2 });
+        const sectionTexts = sections.map((s) => s.textContent);
+
+        expect(sectionTexts).toEqual(['테마', '프로필', '맞춤형 지침']);
+    });
+
+    it('renders save button in custom instructions section', () => {
+        render(<SettingsPage />);
+
+        expect(screen.getByRole('button', { name: '저장' })).toBeInTheDocument();
+    });
+
+    it('saves custom instructions to store when save button is clicked', async () => {
+        const user = userEvent.setup();
+        render(<SettingsPage />);
+
+        const aboutMeTextarea = screen.getByLabelText(/나에 대해/);
+        const responseStyleTextarea = screen.getByLabelText(/응답 방식/);
+
+        await user.type(aboutMeTextarea, 'I am a developer');
+        await user.type(responseStyleTextarea, 'Be concise');
+        await user.click(screen.getByRole('button', { name: '저장' }));
+
+        const state = useCustomInstructionsStore.getState();
+        expect(state.aboutMe).toBe('I am a developer');
+        expect(state.responseStyle).toBe('Be concise');
     });
 });
